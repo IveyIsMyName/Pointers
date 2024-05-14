@@ -20,7 +20,8 @@ void main()
 	
 	int* odd = new int[odd_size];
 	int* even = new int[even_size];
-	
+
+	cout << odd_size << tab << even_size;
 	cout << "Массив с четными числами: ";
 	for (int i = 0; i < n; i++)
 	{
