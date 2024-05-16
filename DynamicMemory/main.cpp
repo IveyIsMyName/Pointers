@@ -2,8 +2,9 @@
 using namespace std;
 #define tab "\t"
 
-void FillRand(int arr[], const int n);
-void Print(int arr[], const int n);
+void FillRand(int arr[], int n);
+void Print(int arr[], int n);
+int* push_back(int arr[], int& n, const int value);
 
 void main()
 {
@@ -16,21 +17,12 @@ void main()
 
 	int value;
 	cout << "Введите добавляемое значение: "; cin >> value;
-	
-	int* buffer = new int[n + 1];
-	for (int i = 0; i < n; i++)
-	{
-		buffer[i] = arr[i];
-	}
-	delete[] arr;
-	arr = buffer;
-	arr[n] = value;
-	n++;
+	arr = push_back(arr, n, value);
 	Print(arr, n);
 	delete[] arr;
 }
 
-void FillRand(int arr[], const int n)
+void FillRand(int arr[], int n)
 {
 	for (int i = 0; i < n; i++)
 	{
@@ -38,7 +30,7 @@ void FillRand(int arr[], const int n)
 	}
 	//обращение к элементам массива через арифметику указателей и оператор разыменования
 }
-void Print(int arr[], const int n)
+void Print(int arr[], int n)
 {
 	for (int i = 0; i < n; i++)
 	{
@@ -46,4 +38,18 @@ void Print(int arr[], const int n)
 	//обращение к элементам массива через оператор индексирования[]
 	}
 	cout << endl;
+}
+
+int* push_back(int arr[], int& n, const int value)
+{
+	int* buffer = new int[n + 1]; //буферный массив
+	for (int i = 0; i < n; i++)  // копируем значение
+	{
+		buffer[i] = arr[i];
+	}
+	delete[] arr;				//удаляет исходный массив
+	arr = buffer;				//подменяем адрес в указателе 'arr'
+	arr[n] = value;
+	n++;						//добавляем новое значение в конец
+	return arr;
 }
