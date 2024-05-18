@@ -104,12 +104,16 @@ int* push_front(int arr[], int& n, const int value)
 int* insert(int arr[], int& n, int index, const int value)
 {
 	int* buffer = new int[n + 1];
-	for (int i = 0; i < n; i++) 
+	/*for (int i = 0; i < n; i++) 
 	{
 		buffer[i] = arr[i];
 	}
 	for (int i = n; i > index; i--) {
 		buffer[i] = buffer[i - 1];
+	}*/
+	for (int i = 0; i < n; i++)
+	{
+		buffer[i < index ? i : i + 1] = arr[i];
 	}
 	delete[] arr;
 	buffer[index] = value;
@@ -156,7 +160,8 @@ int* erase(int arr[], int& n, int index)
 	{
 		if (i != index)
 		{
-			buffer[j++] = arr[i];
+			buffer[j] = arr[i];
+			j++;
 		}
 	}
 	delete[]arr;
