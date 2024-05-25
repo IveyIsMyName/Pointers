@@ -16,13 +16,13 @@ template<typename T>void FillRand(T** arr, const int rows, const int cols);
 template<typename T>void Print(T arr[], int n);
 template<typename T>void Print(T** arr, const int rows, const int cols);
 
-template<typename T>T* push_back(T arr[], int& n, const int value);
-template<typename T>T* push_front(T arr[], int& n, const int value);
+template<typename T>T* push_back(T arr[], int& n, T value);
+template<typename T>T* push_front(T arr[], int& n, T value);
 
 template<typename T>T* pop_back(T arr[], int& n);
 template<typename T>T* pop_front(T arr[], int& n);
 
-template<typename T>T* insert(T arr[], int& n, int index, const int value);
+template<typename T>T* insert(T arr[], int& n, int index, T value);
 template<typename T>T* erase(T arr[], int& n, const int index);
 
 template<typename T>T** push_row_back(T** arr, int& rows, int cols);
@@ -445,7 +445,7 @@ template<typename T>T** erase_col (T** arr, int rows, int& cols, const int index
 
 	return arr;
 }
-template<typename T>T* push_back(T arr[], int& n, const int value)
+template<typename T>T* push_back(T arr[], int& n, T value)
 {
 	T* buffer = new T[n + 1]; //буферный массив
 	for (int i = 0; i < n; i++)  // копируем значение
@@ -459,7 +459,7 @@ template<typename T>T* push_back(T arr[], int& n, const int value)
 
 	return arr;
 }
-template<typename T>T* push_front(T arr[], int& n, const int value)
+template<typename T>T* push_front(T arr[], int& n, T value)
 {
 	T* buffer = new T[n + 1]; 
 	for (int i = 0; i < n; i++)
@@ -473,7 +473,7 @@ template<typename T>T* push_front(T arr[], int& n, const int value)
 
 	return arr;
 }
-template<typename T>T* insert(T arr[], int& n, int index, const int value)
+template<typename T>T* insert(T arr[], int& n, int index, T value)
 {
 	T* buffer = new T[n + 1];
 	/*for (int i = 0; i < n; i++) 
