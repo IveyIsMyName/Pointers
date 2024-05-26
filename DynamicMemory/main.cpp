@@ -334,7 +334,6 @@ template<typename T>T** erase_row(T** arr, int& rows, int cols, const int index)
 	{
 		buffer[i] = arr[i < index ? i : i + 1];
 	}
-	delete[] arr[rows];
 	delete[] arr;
 
 	return buffer;
