@@ -5,6 +5,7 @@ using std::cout;
 using std::endl;
 #define tab "\t"
 
+template<typename T>T** AllocateNewRow(int rows);
 template<typename T>T** Allocate(int rows, int cols);
 template<typename T>void Clear(T** arr, const int rows);
 
@@ -201,6 +202,10 @@ void main()
 	Clear(arr, rows);
 #endif // PERFORMANCE_CHECK
 }
+template<typename T>T** AllocateNewRow(int rows)
+{
+	return new T* [rows + 1];
+}
 
 template<typename T>T** Allocate(int rows, int cols)
 {
@@ -279,7 +284,7 @@ template<typename T>void Print(T** arr, const int rows, const int cols)
 
 template<typename T>T** push_row_back(T** arr, int& rows, int cols)
 {
-	T** buffer = new T*[rows + 1];
+	T** buffer = AllocateNewRow<T>(rows);
 	for (int i = 0; i < rows; i++)buffer[i] = arr[i];
 	delete[] arr;
 	buffer[rows] = new T[cols] {};
@@ -289,7 +294,7 @@ template<typename T>T** push_row_back(T** arr, int& rows, int cols)
 }
 template<typename T>T** push_row_front(T** arr, int& rows, int cols)
 {
-	T** buffer = new T* [rows + 1];
+	T** buffer = AllocateNewRow<T>(rows);
 	for (int i = 0; i < rows; i++)buffer[i + 1] = arr[i];
 	delete[] arr;
 	buffer[0] = new T[cols] {};
@@ -300,7 +305,7 @@ template<typename T>T** push_row_front(T** arr, int& rows, int cols)
 template<typename T>T** insert_row(T** arr, int& rows, int cols, const int index)
 {
 	if (index >= rows)return arr;
-	T** buffer = new T* [rows + 1];
+	T** buffer = AllocateNewRow<T>(rows);
 	for (int i = 0; i < rows; i++)
 	{
 		buffer[i < index ? i : i + 1] = arr[i];
