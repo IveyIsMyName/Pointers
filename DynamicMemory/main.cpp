@@ -5,14 +5,21 @@ using std::cout;
 using std::endl;
 #define tab "\t"
 
-template<typename T>T** AllocateNewRow(int rows);
 template<typename T>T** Allocate(int rows, int cols);
+template<typename T>T** AllocateNewRows(int& rows);
+template<typename T>T** AllocateLessRows(int& rows);
+template<typename T>T* CreateNewRow(int cols);
+template<typename T>void CopyRow(T** buffer, T** arr, int rows);
+template<typename T>void CopyRowAtIndex(T** buffer, T** arr, int rows, int index_to_erase, int index_to_insert);
 template<typename T>void Clear(T** arr, const int rows);
 
 void FillRand(int arr[], const int n, int minRand = 0, int maxRand = 100);
-void FillRand(double arr[], const int n);
-void FillRand(char arr[], const int n);
-template<typename T>void FillRand(T** arr, const int rows, const int cols);
+void FillRand(double arr[], const int n, int minRand = 0, int maxRand = 100);
+void FillRand(char arr[], const int n, int minRand = 0, int maxRand = 100);
+
+void FillRand(int** arr, const int rows, const int cols, int minRand = 0, int maxRand = 100);
+void FillRand(double** arr, const int rows, const int cols, int minRand = 0, int maxRand = 100);
+void FillRand(char** arr, const int rows, const int cols, int minRand = 0, int maxRand = 100);
 
 template<typename T>void Print(T arr[], int n);
 template<typename T>void Print(T** arr, const int rows, const int cols);
@@ -51,7 +58,7 @@ template<typename T>T** erase_col(T** arr, int rows, int& cols, const int index)
 void main()
 {
 	setlocale(LC_ALL, "");
-	
+	typedef double DataType;
 #ifdef DYNAMIC_MEMORY_1
 	int n = 5;
 	cout << "Введите размер массива: "; cin >> n;
@@ -118,44 +125,38 @@ void main()
 	cout << "Введите количество строк: "; cin >> rows;
 	cout << "Введите количество элементов строки: "; cin >> cols;
 
+	DataType** arr = Allocate<DataType>(rows, cols);
+	FillRand(arr, rows, cols);
+	Print(arr, rows, cols);
+	
 	cout << "Добавляем строку в конце: " << endl;
-	double** d_arr = Allocate<double>(rows, cols);
-	FillRand(d_arr, rows, cols);
-	d_arr = push_row_back(d_arr, rows, cols);
-	FillRand(d_arr[rows - 1], cols);
-	Print(d_arr, rows, cols);
+	arr = push_row_back(arr, rows, cols);
+	FillRand(arr[rows - 1], cols);
+	Print(arr, rows, cols);
 
 	cout << "Добавляем строку в начало: " << endl;
-	d_arr = push_row_front(d_arr, rows, cols);
-	FillRand(d_arr[0], cols);
-	Print(d_arr, rows, cols);
+	arr = push_row_front(arr, rows, cols);
+	FillRand(arr[0], cols);
+	Print(arr, rows, cols);
 	
-	Clear(d_arr, rows);
-
 	cout << "Введите индекс для вставки строки: "; cin >> index;
-	char** c_arr = Allocate<char>(rows, cols);
-	FillRand(c_arr, rows, cols);
-	c_arr = insert_row(c_arr, rows, cols, index);
-	if (index < rows)FillRand(c_arr[index], cols);
-	Print(c_arr, rows, cols);
+	arr = insert_row(arr, rows, cols, index);
+	if (index < rows)FillRand(arr[index], cols);
+	Print(arr, rows, cols);
 
 	cout << "Удаляем последнюю строку: " << endl;
-	c_arr = pop_row_back(c_arr, rows, cols);
-	Print(c_arr, rows, cols);
+	arr = pop_row_back(arr, rows, cols);
+	Print(arr, rows, cols);
 
 	cout << "Удаляем нулевую строку: " << endl;
-	c_arr = pop_row_front(c_arr, rows, cols);
-	Print(c_arr, rows, cols);
+	arr = pop_row_front(arr, rows, cols);
+	Print(arr, rows, cols);
 
 	cout << "Введите индекс для удаления строки: "; cin >> index;
-	c_arr = erase_row(c_arr, rows, cols, index);
-	Print(c_arr, rows, cols);
+	arr = erase_row(arr, rows, cols, index);
+	Print(arr, rows, cols);
 	
-	Clear(c_arr, rows);
-
 	cout << "Добавляем столбец в конце: " << endl;
-	int** arr = Allocate<int>(rows, cols);
-	FillRand(arr, rows, cols);
 	arr = push_col_back(arr, rows, cols);
 	Print(arr, rows, cols);
 
@@ -202,21 +203,42 @@ void main()
 	Clear(arr, rows);
 #endif // PERFORMANCE_CHECK
 }
-template<typename T>T** AllocateNewRow(int rows)
-{
-	return new T* [rows + 1];
-}
 
 template<typename T>T** Allocate(int rows, int cols)
 {
-	T** arr = new T* [rows];
+	T** arr = new T * [rows];
 	for (int i = 0; i < rows; i++)
 	{
 		arr[i] = new T[cols];
 	}
 	return arr;
 }
-
+template<typename T>T** AllocateNewRows(int& rows)
+{
+	return new T* [rows + 1];
+}
+template<typename T>T** AllocateLessRows(int& rows)
+{
+	return new T* [rows - 1];
+}
+template<typename T>T* CreateNewRow(int cols)
+{
+	return new T[cols]{};
+}
+template<typename T>void CopyRow(T** buffer, T** arr, int rows)
+{
+	for (int i = 0; i < rows; i++)buffer[i] = arr[i];
+}
+template<typename T>void CopyRowAtIndex(T** buffer, T** arr, int rows, int index_to_erase, int index_to_insert)
+{
+	int j = 0;
+	for (int i = 0; i < rows; i++)
+	{
+		if (i == index_to_erase)continue; //пропускаем строку, если это строка для удаления
+		if (j == index_to_insert)j++; //вставляем новую строку в нужное место
+		buffer[j++] = arr[i];
+	}
+}
 template<typename T>void Clear(T** arr, const int rows)
 {
 	for (int i = 0; i < rows; i++)
@@ -225,8 +247,7 @@ template<typename T>void Clear(T** arr, const int rows)
 	}
 	delete[] arr;
 }
-
-template<typename T>void FillRand(T** arr, const int rows, const int cols)
+void FillRand(int** arr, const int rows, const int cols, int minRand, int maxRand)
 {
 	for (int i = 0; i < rows; i++)
 	{
@@ -236,7 +257,28 @@ template<typename T>void FillRand(T** arr, const int rows, const int cols)
 		}
 	}
 }
-
+void FillRand(double** arr, const int rows, const int cols, int minRand, int maxRand)
+{
+	minRand *= 100;
+	maxRand *= 100;
+	for (int i = 0; i < rows; i++)
+	{
+		for (int j = 0; j < cols; j++)
+		{
+			arr[i][j] = double(rand() % (maxRand - minRand)+minRand)/100;
+		}
+	}
+}
+void FillRand(char** arr, const int rows, const int cols, int minRand, int maxRand)
+{
+	for (int i = 0; i < rows; i++)
+	{
+		for (int j = 0; j < cols; j++)
+		{
+			arr[i][j] = rand();
+		}
+	}
+}
 void FillRand(int arr[], const int n, int minRand, int maxRand)
 {
 	for (int i = 0; i < n; i++)
@@ -244,22 +286,23 @@ void FillRand(int arr[], const int n, int minRand, int maxRand)
 		*(arr + i) = rand() % (maxRand - minRand) + minRand;
 	}
 }
-void FillRand(double arr[], const int n)
+void FillRand(double arr[], const int n, int minRand, int maxRand)
 {
+	minRand *= 100;
+	maxRand *= 100;
 	for (int i = 0; i < n; i++)
 	{
-		arr[i] = rand() % 10000;
+		arr[i] = rand() % (maxRand - minRand) + minRand;
 		arr[i] /= 100;
 	}
 }
-void FillRand(char arr[], const int n)
+void FillRand(char arr[], const int n, int minRand, int maxRand)
 {
 	for (int i = 0; i < n; i++)
 	{
 		arr[i] = rand();
 	}
 }
-
 template<typename T>void Print(T arr[], int n)
 {
 	for (int i = 0; i < n; i++)
@@ -281,23 +324,22 @@ template<typename T>void Print(T** arr, const int rows, const int cols)
 	}
 	cout << endl;
 }
-
 template<typename T>T** push_row_back(T** arr, int& rows, int cols)
 {
-	T** buffer = AllocateNewRow<T>(rows);
-	for (int i = 0; i < rows; i++)buffer[i] = arr[i];
+	T** buffer = AllocateNewRows<T>(rows);
+	CopyRow(buffer, arr, rows);
 	delete[] arr;
-	buffer[rows] = new T[cols] {};
+	buffer[rows] = CreateNewRow<T>(cols);
 	rows++;
 	
 	return buffer;
 }
 template<typename T>T** push_row_front(T** arr, int& rows, int cols)
 {
-	T** buffer = AllocateNewRow<T>(rows);
-	for (int i = 0; i < rows; i++)buffer[i + 1] = arr[i];
+	T** buffer = AllocateNewRows<T>(rows);
+	CopyRow(buffer + 1, arr, rows);
 	delete[] arr;
-	buffer[0] = new T[cols] {};
+	buffer[0] = CreateNewRow<T>(cols);
 	rows++;
 
 	return buffer;
@@ -305,42 +347,39 @@ template<typename T>T** push_row_front(T** arr, int& rows, int cols)
 template<typename T>T** insert_row(T** arr, int& rows, int cols, const int index)
 {
 	if (index >= rows)return arr;
-	T** buffer = AllocateNewRow<T>(rows);
-	for (int i = 0; i < rows; i++)
-	{
-		buffer[i < index ? i : i + 1] = arr[i];
-	}
+	T** buffer = AllocateNewRows<T>(rows);
+	CopyRowAtIndex(buffer, arr, rows, -1, index);
 	delete[] arr;
-	buffer[index] = new T[cols];
+	buffer[index] = CreateNewRow<T>(cols);
 	rows++;
 
 	return buffer;
 }
 template<typename T>T** pop_row_back(T** arr, int& rows, int cols)
 {
-	T** buffer = new T* [--rows];
-	for (int i = 0; i < rows; i++) buffer[i] = arr[i];
+	T** buffer = AllocateLessRows<T>(rows);
+	rows--;
+	CopyRow(buffer, arr, rows);
 	delete[] arr;
 
 	return buffer;
 }
 template<typename T>T** pop_row_front(T** arr, int& rows, int cols)
 {
-	T** buffer = new T* [--rows];
-	for (int i = 0; i < rows; i++)buffer[i] = arr[i + 1];
+	T** buffer = AllocateLessRows<T>(rows);
+	rows--;
+	CopyRow(buffer, arr, rows);
 	delete[] arr;
-
+	
 	return buffer;
 }
 template<typename T>T** erase_row(T** arr, int& rows, int cols, const int index)
 {
-	T** buffer = new T*[--rows];
-	for (int i = 0; i < rows; i++)
-	{
-		buffer[i] = arr[i < index ? i : i + 1];
-	}
-	delete[] arr[rows];
+	if (index >= rows)return arr;
+	T** buffer =  AllocateLessRows<T>(rows);
+	CopyRowAtIndex(buffer, arr, rows, index, -1);
 	delete[] arr;
+	rows--;
 
 	return buffer;
 }
