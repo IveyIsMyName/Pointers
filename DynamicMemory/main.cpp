@@ -6,8 +6,8 @@ using std::endl;
 #define tab "\t"
 
 template<typename T>T** Allocate(int rows, int cols);
-template<typename T>T** AllocateNewRows(int& rows);
-template<typename T>T** AllocateLessRows(int& rows);
+template<typename T>T** AllocateNewRows(int rows);
+template<typename T>T** AllocateLessRows(int rows);
 template<typename T>T* CreateNewRow(int cols);
 template<typename T>void CopyRow(T** buffer, T** arr, int rows);
 template<typename T>void CopyRowAtIndex(T** buffer, T** arr, int rows, int index_to_erase, int index_to_insert);
@@ -213,11 +213,11 @@ template<typename T>T** Allocate(int rows, int cols)
 	}
 	return arr;
 }
-template<typename T>T** AllocateNewRows(int& rows)
+template<typename T>T** AllocateNewRows(int rows)
 {
 	return new T* [rows + 1];
 }
-template<typename T>T** AllocateLessRows(int& rows)
+template<typename T>T** AllocateLessRows(int rows)
 {
 	return new T* [rows - 1];
 }
@@ -357,8 +357,7 @@ template<typename T>T** insert_row(T** arr, int& rows, int cols, const int index
 }
 template<typename T>T** pop_row_back(T** arr, int& rows, int cols)
 {
-	T** buffer = AllocateLessRows<T>(rows);
-	rows--;
+	T** buffer = AllocateLessRows<T>(rows--);
 	CopyRow(buffer, arr, rows);
 	delete[] arr;
 
@@ -366,8 +365,7 @@ template<typename T>T** pop_row_back(T** arr, int& rows, int cols)
 }
 template<typename T>T** pop_row_front(T** arr, int& rows, int cols)
 {
-	T** buffer = AllocateLessRows<T>(rows);
-	rows--;
+	T** buffer = AllocateLessRows<T>(rows--);
 	CopyRow(buffer, arr, rows);
 	delete[] arr;
 	
