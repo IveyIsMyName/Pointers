@@ -5,8 +5,8 @@ using namespace std;
 void main()
 {
 	setlocale(LC_ALL, "");
+	
 	int counter = 0;
-
 	unsigned char c = 0;
 	do
 	{
