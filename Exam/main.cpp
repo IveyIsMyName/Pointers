@@ -6,7 +6,8 @@ void main()
 {
 	setlocale(LC_ALL, "");
 	
-	int counter = 0;
+	int counter = 0;	//счетчик кол-ва выводимых символов
+	
 	unsigned char c = 0;
 	do
 	{
@@ -15,12 +16,12 @@ void main()
 		counter++;
 	} while (c);
 
-	cout << "\n" "Количество символов: " << counter; //256 символов
+	cout << "\nКоличество символов: " << counter; //256 символов
 
 	/*for (unsigned char i = 1; i; i++)
 	{
 		cout << i << "\t";
 		counter++;
 	}
-	cout << "\n" "Количество символов: " << counter;*/ //255 символов
+	cout << "\nКоличество символов: " << counter*/; //255 символов
 }
